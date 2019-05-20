@@ -7,7 +7,8 @@
 
 #include "MainFrm.h"
 #include "InfoFile.h"
-
+#include "CDisplayView.h"
+#include "CSelectView.h"
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -104,3 +105,26 @@ void CMainFrame::Dump(CDumpContext& dc) const
 
 // CMainFrame 消息处理程序
 
+
+
+BOOL CMainFrame::OnCreateClient(LPCREATESTRUCT lpcs, CCreateContext* pContext)
+{
+	// TODO: 在此添加专用代码和/或调用基类
+
+	// 静态拆分窗口，1行2列，CSplitterWnd::CreateStatic
+	m_spliter.CreateStatic(this, 1, 2);
+
+	// 创建视图：CSplitterWnd::CreateView
+	//0, 0 ： 放在第0行第0列的位置
+	//RUNTIME_CLASS(CSelectView) ：需要头文件#include "SelectView.h"， CSelectView在SelectView.h中声明
+	// CSize(250, 500)：指定视图宽度和高度
+	//pContext ： 为OnCreateClient()最后一个形参
+	m_spliter.CreateView(0, 0, RUNTIME_CLASS(CSelectView), CSize(200, 500), pContext);
+
+	//0, 1： 放在第0行第1列的位置
+	//CDispalyView，需要头文件#include "DispalyView.h"
+	m_spliter.CreateView(0, 1, RUNTIME_CLASS(CDisplayView), CSize(600, 500), pContext);
+
+	//return CFrameWnd::OnCreateClient(lpcs, pContext);
+	return TRUE;
+}
